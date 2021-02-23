@@ -28,6 +28,7 @@ urlpatterns = [
     path('login/',views.login_page,name='login'),
     path('register/',views.register_page,name='register'),
     path('', include('products.urls', namespace='products')),
+    path('', include('search.urls', namespace='search')),
     #path('<path/>'TemplateView.as_view(template_name='bootstrap/example.html')), 
 ]
 if settings.DEBUG:
