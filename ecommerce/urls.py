@@ -17,16 +17,18 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.home_page),
-    path('about/',views.about_page),
-    path('contact/',views.contact_page),
-    path('login/',views.login_page),
-    path('register/',views.register_page),
+    path('',views.home_page, name='home'),
+    path('about/',views.about_page,name='about'),
+    path('contact/',views.contact_page,name='contact'),
+    path('login/',views.login_page,name='login'),
+    path('register/',views.register_page,name='register'),
+    path('', include('products.urls', namespace='products')),
+    #path('<path/>'TemplateView.as_view(template_name='bootstrap/example.html')), 
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -10,13 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-
+import os 
 
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #my Apps
+    'products.apps.ProductsConfig',
 ]
 
 MIDDLEWARE = [
@@ -120,16 +121,30 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+# STATIC_URL = '/static/'
+
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
+
+# #STATIC_ROOT = (BASE_DIR, "/static_cdn", "/static_root")
+
+# STATIC_ROOT = "/home/msoto056/Dev/django/static_cdn/static_root"
+
+# MEDIA_URL = '/media_root/'
+#MEDIA_ROOT = "/home/msoto056/Dev/django/static_cdn/media_root"
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, "static"),
 ]
 
-#STATIC_ROOT = (BASE_DIR, "/static_cdn", "/static_root")
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "static_root")
 
-STATIC_ROOT = "/home/msoto056/Dev/django/static_cdn/"
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = ("/home/msoto056/Dev/django/static_cdn/", "static_cdn", "media_root")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "media_root")
+
+
 
