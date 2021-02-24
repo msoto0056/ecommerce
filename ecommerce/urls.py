@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import path,include
 from . import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home_page, name='home'),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('register/',views.register_page,name='register'),
     path('', include('products.urls', namespace='products')),
     path('', include('search.urls', namespace='search')),
+    path('', include('carts.urls', namespace='cart')),
     #path('<path/>'TemplateView.as_view(template_name='bootstrap/example.html')), 
 ]
 if settings.DEBUG:
