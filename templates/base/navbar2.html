@@ -1,36 +1,58 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
+{% url 'home' as home_url %}
+{% url 'about' as about_url %}
+{% url 'contact' as contact_url %}
+{% url 'products:product' as product_list_url %}
+{% url 'products:productf' as featured_url %}
+{% url 'acconts:login' as login_url %}
+{% url 'accounts:logout' as logout_url %}
+{% url 'register' as register_url %}
+{% url 'cart:home' as cart_url %}
+
+
+<nav class="navbar  navbar-expand-lg navbar-light bg-light">
+    <!-- <div class="container-fluid"> -->
+    <div class="container"> 
+      <a class="navbar-brand" href="#">
+        <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24">
+      </a>
+    <a class="navbar-brand" href="{{ home_url }}">{%if brand_name%} {{brand_name}} {%else %} eCommerce {%endif%} </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="nav nav-tabs me-auto mb-2 mb-lg-0">
+        <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0"> -->
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{{ home_url }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{product_list_url }}">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{cart_url }}">{{request.session.cart_items}} <i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Login
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{{about_url}}">About</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a class="dropdown-item" href="{{logout_url}}">Logout</a></li>
+                {% else %}
+                    <li><a class="nav-link" href="{{ register_url }}">Register</a></li>
+                    <li><a class="nav-link" href="{{ login_url }}">Login</a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{contact_url}}">Contacts</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{featured_url}}" tabindex="-1" aria-disabled="true">Featured Products</a>
+          </li>
+        </ul>
+        
+        {%include 'search/snippets/search-form.html'%}
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
