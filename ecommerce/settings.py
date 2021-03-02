@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'addresses.apps.AddressesConfig',
 ]
 
+AUTH_USER_MODEL = 'accounts.User'  # Change the User Model to our custom UserModel
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -116,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
+#LANGUAGE_CODE = 'es-CR'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True

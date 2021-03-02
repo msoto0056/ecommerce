@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+#from django.http import JsonResponse
 
 from accounts.forms import LoginForm, GuestForm
 from accounts.models import GuestEmail
@@ -29,6 +30,9 @@ def cart_update(request):
             cart_obj.products.add(product_obj) # cart_obj.products.add(product_id)
         request.session['cart_items']=cart_obj.products.count()
         # return redirect(product_obj.get_absolute_url())
+        ### look at Async Views.
+        # if request.headers.get('x-requested-with') == 'XMLHttpRequest' # deprecated in Django 3.1request.is_ajax()
+        #     return JsonResponse({})
     return redirect("carts:home")
 
 def checkout_home(request):
