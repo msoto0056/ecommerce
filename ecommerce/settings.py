@@ -48,9 +48,21 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'billing.apps.BillingConfig',
     'addresses.apps.AddressesConfig',
+    'marketing.apps.MarketingConfig',
+    'analytics.apps.AnalyticsConfig',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'  # Change the User Model to our custom UserModel
+FORCE_SESSION_TO_ONE = False
+FORCE_INACTIVE_USER_ENDSESSION = False
+
+
+#include MailChimp.txt for run and remove to upload to Githib
+#MailChip will disable the Key if it's uploaded to a public site like github
+
+MAILCHIMP_API_KEY           = '5e069d54b127bdda19ac03800c22cde4-us1'
+MAILCHIMP_DATA_CENTER       = 'us1'
+MAILCHIMP_EMAIL_LIST_ID     = '8ce844a161'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

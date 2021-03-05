@@ -12,39 +12,21 @@
         <body>
           {% include 'base/navbar.html' with brand_name='MS eCommerce'%}
           <div class="container">
+            {% if messages %}
+              <div class="alert alert-success messages">
+                {% for message in messages %}
+                <span{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}<br/>
+                </span>
+                {% endfor %}
+              </div>
+            {% endif %}
           {% block content %}{% endblock %}
           </div>
     
-    
-    
-            {% include 'base/js.html' %}
+          {% include 'base/js.html' %}
 
-          <script>
-            //   $(document).ready(function(){
-            //     var productForm = $(".form-product-ajax")
-            //     productForm.submit(function (event) {
-            //       event.preventDefault();
-            //       console.log("Form is not sending")
-            //       var thisForm= $(this)
-            //       var actionEndpoint= thisForm.attr("action");
-            //       var httpMethod= thisForm.attr("method");
-            //       var formData=thisForm.serialize();
-
-            //       $.ajax({
-            //         url:actionEndpoint,
-            //         method:actionEndpoint,
-            //         data:formData,
-            //         success:function(data){
-
-            //         },
-            //         error:function(errorData){
-
-            //         }
-            //       })
-
-            //     })
-            //   })
-            // </script>
         </body>
       </html>
 
