@@ -56,6 +56,8 @@ AUTH_USER_MODEL = 'accounts.User'  # Change the User Model to our custom UserMod
 FORCE_SESSION_TO_ONE = False
 FORCE_INACTIVE_USER_ENDSESSION = False
 
+STRIPE_SECRET_KEY = "sk_test_51IRg1WJaIbGmBAOdAh0FxwTnhS7XLoTkHIFuYjejlHekiKBhmo2T9VOqeNE92uSs57nvYes798jhew9NX2L7TPu400Yz61ht4v"
+STRIPE_PUB_KEY = 'pk_test_51IRg1WJaIbGmBAOdsizxW00zGGS4MLJSUiNd4C1vj5hV4Sswp3JF4zFUdVSw6xZBPxn3990On1EIzRQnWGuEEQBh00mqsgm5UK'
 
 #include MailChimp.txt for run and remove to upload to Githib
 #MailChip will disable the Key if it's uploaded to a public site like github
@@ -143,18 +145,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-# STATIC_URL = '/static/'
-
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
-
-# #STATIC_ROOT = (BASE_DIR, "/static_cdn", "/static_root")
-
-# STATIC_ROOT = "/home/msoto056/Dev/django/static_cdn/static_root"
-
-# MEDIA_URL = '/media_root/'
-#MEDIA_ROOT = "/home/msoto056/Dev/django/static_cdn/media_root"
 
 STATIC_URL = '/static/'
 

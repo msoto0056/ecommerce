@@ -46,7 +46,7 @@ def marketing_pref_update_receiver(sender, instance, *args, **kwargs):
 
 pre_save.connect(marketing_pref_update_receiver, sender=MarketingPreference)
 
-def make_marketing_pref_receiver(sender, instance, *args, **kwargs):
+def make_marketing_pref_receiver(sender, instance, created,*args, **kwargs):
     
     #User model
     if created:

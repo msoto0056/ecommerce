@@ -32,7 +32,7 @@ class LoginView(FormView):
     template_name = "accounts/login.html"
     success_url = "/"
 
-    def form_valid(self,form):
+    def form_valid(self, form):
         request = self.request
         next_ = request.GET.get('next')
         next_post = request.POST.get('next')
@@ -40,11 +40,9 @@ class LoginView(FormView):
         email  = form.cleaned_data.get("email")
         password  = form.cleaned_data.get("password")
         user = authenticate(request, username=email, password=password)
-
         if user is not None:
             login(request, user)
-            user_logged_in.send(user.__class__, instance=user,request=request)
-        
+            user_logged_in.send(user.__class__, instance=user, request=request)
             try:
                 del request.session['guest_email_id']
             except:
@@ -52,8 +50,8 @@ class LoginView(FormView):
             if is_safe_url(redirect_path, request.get_host()):
                 return redirect(redirect_path)
             else:
-                return redirect("/")    
-        return super(LoginView,self).form_invalid(form)
+                return redirect("/")
+        return super(LoginView, self).form_invalid(form)
 
 class RegisterView(CreateView):
     
