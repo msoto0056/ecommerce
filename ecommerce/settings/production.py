@@ -27,7 +27,7 @@ SECRET_KEY = 'tn2an-2#f#o^98g!xzd=!j*nx01n*te*z&w*wj%8bsk64l1ko6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*.herokuapp.com']
+ALLOWED_HOSTS = ['infosoft-ecommerce.herokuapp.com']
 
 
 # Application definition
