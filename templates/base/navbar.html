@@ -29,7 +29,7 @@
             <a class="nav-link" href="{{product_list_url }}">Products</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{cart_url }}">{{request.session.cart_items}} <i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+            <a class="nav-link" href="{{cart_url }}"><span class='navbar-cart-count'>{{request.session.cart_items}} </span><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
           </li>
           {% if request.user.is_authenticated %}
             <li class="nav-item">

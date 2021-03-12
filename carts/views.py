@@ -1,5 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render,redirect
-#from django.http import JsonResponse
+from django.http import JsonResponse
 
 from accounts.forms import LoginForm, GuestForm
 from accounts.models import GuestEmail
@@ -10,6 +11,25 @@ from billing.models import BillingProfile
 from orders.models import Order
 from products.models import Product
 from .models import Cart
+
+import stripe
+
+STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IRg1WJaIbGmBAOdAh0FxwTnhS7XLoTkHIFuYjejlHekiKBhmo2T9VOqeNE92uSs57nvYes798jhew9NX2L7TPu400Yz61ht4v")
+STRIPE_PUB_KEY =  getattr(settings, "STRIPE_PUB_KEY", 'pk_test_51IRg1WJaIbGmBAOdsizxW00zGGS4MLJSUiNd4C1vj5hV4Sswp3JF4zFUdVSw6xZBPxn3990On1EIzRQnWGuEEQBh00mqsgm5UK')
+stripe.api_key = STRIPE_SECRET_KEY
+
+def cart_detail_api_view(request):
+    cart_obj, new_obj = Cart.objects.new_or_get(request)
+    products = [{
+            "id": x.id,
+            "url": x.get_absolute_url(),
+            "name": x.name, 
+            "price": x.price,
+            "image": str(x.image),
+            } 
+            for x in cart_obj.products.all()]
+    cart_data  = {"products": products, "subtotal": cart_obj.subtotal, "total": cart_obj.total}
+    return JsonResponse(cart_data)
 
 def cart_home(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
@@ -26,13 +46,23 @@ def cart_update(request):
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         if product_obj in cart_obj.products.all():
             cart_obj.products.remove(product_obj)
+            added = False
         else:
             cart_obj.products.add(product_obj) # cart_obj.products.add(product_id)
+            added = True
         request.session['cart_items']=cart_obj.products.count()
         # return redirect(product_obj.get_absolute_url())
         ### look at Async Views.
-        # if request.headers.get('x-requested-with') == 'XMLHttpRequest' # deprecated in Django 3.1request.is_ajax()
-        #     return JsonResponse({})
+        # if request.is_ajax(): # Asynchronous JavaScript And XML / JSON 
+        # request.is_ajax() was deprecated in Django 3.1  instead use  below code
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':  
+            json_data ={
+                "added":added,
+                "removed": not added,
+                "cartItemCount":cart_obj.products.count()
+            }
+            return JsonResponse(json_data, status=200)
+
     return redirect("carts:home")
 
 def checkout_home(request):
@@ -48,6 +78,7 @@ def checkout_home(request):
 
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     address_qs = None
+    has_card = False
     if billing_profile is not None:
         if request.user.is_authenticated:
             address_qs = Address.objects.filter(billing_profile=billing_profile)
@@ -60,16 +91,26 @@ def checkout_home(request):
             del request.session["billing_address_id"]
         if billing_address_id or shipping_address_id:
             order_obj.save()
-            
+        has_card = billing_profile.has_card
+
     if request.method == "POST":
         "check that order is done"
-        is_done = order_obj.check_done()
-        if is_done:
-            order_obj.mark_paid()
-            request.session['cart_items'] = 0
-            del request.session['cart_id']
-            return redirect("carts:success")   
-
+        is_prepared = order_obj.check_done()
+        if is_prepared:
+            did_charge, crg_msg = billing_profile.charge(order_obj)
+            if did_charge:
+                order_obj.mark_paid()
+                request.session['cart_items'] = 0
+                del request.session['cart_id']
+                if not billing_profile.user:
+                    '''
+                    is this the best spot?
+                    '''
+                    billing_profile.set_cards_inactive()
+                return redirect("carts:success")
+            else:
+                print(crg_msg)
+                return redirect("carts:checkout")
     context = {
         "object": order_obj,
         "billing_profile": billing_profile,
@@ -77,6 +118,8 @@ def checkout_home(request):
         "guest_form": guest_form,
         "address_form":address_form,
         "address_qs": address_qs,
+        "has_card": has_card,
+        "publish_key": STRIPE_PUB_KEY,
     }
     return render(request, "carts/checkout.html", context)
 

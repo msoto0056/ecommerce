@@ -15,7 +15,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'tn2an-2#f#o^98g!xzd=!j*nx01n*te*z&w*wj%8bsk64l1ko6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com']
 
 
 # Application definition
@@ -48,9 +48,23 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'billing.apps.BillingConfig',
     'addresses.apps.AddressesConfig',
+    'marketing.apps.MarketingConfig',
+    'analytics.apps.AnalyticsConfig',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'  # Change the User Model to our custom UserModel
+FORCE_SESSION_TO_ONE = False
+FORCE_INACTIVE_USER_ENDSESSION = False
+
+STRIPE_SECRET_KEY = "sk_test_51IRg1WJaIbGmBAOdAh0FxwTnhS7XLoTkHIFuYjejlHekiKBhmo2T9VOqeNE92uSs57nvYes798jhew9NX2L7TPu400Yz61ht4v"
+STRIPE_PUB_KEY = 'pk_test_51IRg1WJaIbGmBAOdsizxW00zGGS4MLJSUiNd4C1vj5hV4Sswp3JF4zFUdVSw6xZBPxn3990On1EIzRQnWGuEEQBh00mqsgm5UK'
+
+#include MailChimp.txt for run and remove to upload to Githib
+#MailChip will disable the Key if it's uploaded to a public site like github
+
+MAILCHIMP_API_KEY           = '5e069d54b127bdda19ac03800c22cde4-us1'
+MAILCHIMP_DATA_CENTER       = 'us1'
+MAILCHIMP_EMAIL_LIST_ID     = '8ce844a161'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,6 +108,11 @@ DATABASES = {
     }
 }
 
+# add this
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+DATABASES['default']['CONN_MAX_AGE'] = 500
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -131,18 +150,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-# STATIC_URL = '/static/'
-
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
-
-# #STATIC_ROOT = (BASE_DIR, "/static_cdn", "/static_root")
-
-# STATIC_ROOT = "/home/msoto056/Dev/django/static_cdn/static_root"
-
-# MEDIA_URL = '/media_root/'
-#MEDIA_ROOT = "/home/msoto056/Dev/django/static_cdn/media_root"
 
 STATIC_URL = '/static/'
 
@@ -157,4 +164,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "media_root")
 
 
-
+CORS_REPLACE_HTTPS_REFERER      = True
+HOST_SCHEME                     = "https://"
+SECURE_PROXY_SSL_HEADER         = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT             = True
+SESSION_COOKIE_SECURE           = True
+CSRF_COOKIE_SECURE              = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS  = True
+SECURE_HSTS_SECONDS             = 1000000
+SECURE_FRAME_DENY               = True

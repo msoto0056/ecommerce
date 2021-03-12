@@ -21,7 +21,9 @@ from django.urls import include, path
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+from billing.views import payment_method_view, payment_method_createview
 
+from marketing.views import MarketingPreferenceUpdateView,MailchimpWebhookView
 from . import views
 
 urlpatterns = [
@@ -29,12 +31,16 @@ urlpatterns = [
     path('',views.home_page, name='home'),
     path('about/',views.about_page,name='about'),
     path('contact/',views.contact_page,name='contact'),
-
+    path('billing/payment-method/',payment_method_view,name='billing-payment-method'),
+    path('billing/payment-method/create/',payment_method_createview,name='billing-payment-method-endpoint'),
+    path('settings/email/',MarketingPreferenceUpdateView.as_view(),name='marketing-pref'),
+    path('webhooks/mailchimp/', MailchimpWebhookView.as_view(), name='webhooks-mailchimp'),
     path('', include('products.urls', namespace='products')),
     path('', include('search.urls', namespace='search')),
     path('', include('carts.urls', namespace='carts')),
     path('', include('accounts.urls', namespace='accounts')),
     path('', include('addresses.urls', namespace='addresses')),
+    
     #path('', include('orders.urls', namespace='order')),
     #path('<path/>'TemplateView.as_view(template_name='bootstrap/example.html')), 
     #path('checkout/address/create/', checkout_address_create_view, name='checkout_address_create'),
