@@ -54,61 +54,36 @@ class Mailchimp(object):
 
 
     def get_members_endpoint(self):
-        endpoint = '{list_endpoint}/members'.format(
-                                    list_endpoint=self.list_endpoint)
-        return endpoint
+        return self.list_endpoint + "/members"
+    
 
-    def add_email(self, email):
-        check_email(email)
-        endpoint = self.get_members_endpoint()
-        data = { 
-                "email_address": email, 
-                "status": "subscribed"
-                }
-        r = requests.post(endpoint, 
-                    auth=("", MAILCHIMP_API_KEY), 
-                    data=json.dumps(data)
-                    )
+    def change_subcription_status(self, email, status='unsubscribed'):
+        hashed_email = get_subscriber_hash(email)
+        endpoint = self.get_members_endpoint() + "/" +  hashed_email
+        data = {
+            "status": self.check_valid_status(status)
+        }
+        r = requests.put(endpoint, auth=("", self.key), data=json.dumps(data))
         return r.status_code, r.json()
 
+    def check_subcription_status(self, email):
+        hashed_email = get_subscriber_hash(email)
+        endpoint = self.get_members_endpoint() + "/" +  hashed_email
+        r = requests.get(endpoint, auth=("", self.key))
+        return r.status_code, r.json()
 
     def check_valid_status(self, status):
-        choices = ['subscribed','unsubscribed', 'cleaned', 'pending']
+        choices = ['subscribed', 'unsubscribed', 'cleaned', 'pending']
         if status not in choices:
-            raise ValueError("Not a valid choice")
+            raise ValueError("Not a valid choice for email status")
         return status
 
-    def change_subscription_status(self, email, status):
-        subscriber_hash     = get_subscriber_hash(email)
-        members_endpoint       = self.get_members_endpoint()
-        endpoint            = "{members_endpoint}/{sub_hash}".format(
-                                members_endpoint=members_endpoint, 
-                                sub_hash=subscriber_hash
-                                )
-        data                = {
-                                "status": self.check_valid_status(status)
-                            }
-        r                   = requests.put(endpoint, 
-                                auth=("", MAILCHIMP_API_KEY), 
-                                data=json.dumps(data)
-                                )
-        return r.status_code, r.json()
-
-    def check_subscription_status(self, email):
-        subscriber_hash     = get_subscriber_hash(email)
-        members_endpoint       = self.get_members_endpoint()
-        endpoint            = "{members_endpoint}/{sub_hash}".format(
-                                members_endpoint=members_endpoint, 
-                                sub_hash=subscriber_hash
-                                )
-        r                   = requests.get(endpoint, 
-                                auth=("", MAILCHIMP_API_KEY)
-                                )
-        return r.status_code, r.json()
+    def add_email(self, email):
+        return self.change_subcription_status(email, status='subscribed')
 
 
     def unsubscribe(self, email):
-        return self.change_subscription_status(email, status='unsubscribed') 
+        return self.change_subcription_status(email, status='unsubscribed')
 
     def subscribe(self, email):
         return self.change_subcription_status(email, status='subscribed')

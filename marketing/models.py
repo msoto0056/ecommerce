@@ -7,17 +7,17 @@ from .utils import Mailchimp
 User = settings.AUTH_USER_MODEL
 
 class MarketingPreference(models.Model):
-    user            = models.OneToOneField(User,  on_delete=models.CASCADE)
-    subscribed      = models.BooleanField(default=True)
-    mailchimp_subscribed = models.BooleanField(null=True, blank=True)
-    mailchimp_msg   = models.TextField(null=True, blank=True)
-    timestamp       = models.DateTimeField(auto_now_add=True)
-    updated          = models.DateTimeField(auto_now=True)
+    user                    = models.OneToOneField(User,  on_delete=models.CASCADE)
+    subscribed              = models.BooleanField(default=True)
+    mailchimp_subscribed    = models.BooleanField(null=True, blank=True)
+    mailchimp_msg           = models.TextField(null=True, blank=True)
+    timestamp               = models.DateTimeField(auto_now_add=True)
+    updated                 = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.user.email
     
-def marketing_pref_create_receiver(sender, instance, *args, **kwargs):
+def marketing_pref_create_receiver(sender, instance, created, *args, **kwargs):
     if created:
         # Add user to mailchimp
         #status_code, response_data = Mailchimp().add_email(instance.user.email)  --> otra forma
@@ -47,7 +47,6 @@ def marketing_pref_update_receiver(sender, instance, *args, **kwargs):
 pre_save.connect(marketing_pref_update_receiver, sender=MarketingPreference)
 
 def make_marketing_pref_receiver(sender, instance, created,*args, **kwargs):
-    
     #User model
     if created:
         MarketingPreference.objects.get_or_create(user=instance)
